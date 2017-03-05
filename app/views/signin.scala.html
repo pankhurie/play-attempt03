@@ -1,0 +1,12 @@
+@()
+<div class="row">
+
+    <form method="post" autocomplete="on" action=@routes.HomeController.getProfile()>
+
+        name:<input type="text" name="name"><br>
+        password:<input type="text" name="password"><br>
+        <input type="hidden" name="age" value="24">
+        <input type="submit">
+</form>
+
+</div>
