@@ -1,10 +1,64 @@
 @()
+@header()
+<div class="row">
+    <br>
+    <form class="form" method="post" autocomplete="on" action=@routes.HomeController.postProfile()>
+        <div class="container">
+            <div class="form-group row">
+                <label for="name">User Name:</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
 
+            <div class="form-group form-inline row">
+                <div class="form-group">
+                    <label for="fname">First Name:</label>
+                    <input type="text" class="form-control" id="fname" name="fname">
+                </div>
 
-<form method="post" autocomplete="on" action=@routes.HomeController.postProfile()>
+                <div class=" form-group col-md-offset-1 ">
+                    <label for="mname">Middle Name:</label>
+                    <input type="text" class="form-control" id="mname" name="mname">
+                </div>
 
-     name:<input type="text" name="name"><br>
-    age: <input type="text" name="age"><br>
-    password:<input type="text" name="password"><br>
-    <input type="submit">
-</form>
+                <div class="form-group col-md-offset-1 ">
+                    <label for="lname">Last Name:</label>
+                    <input type="text" class="form-control" id="lname" name="lname">
+                </div>
+            </div>
+            <div class="form-group form-inline row">
+                <div class="form-group  ">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <div class="form-group  col-md-offset-1 ">
+                    <label for="repassword">Re-enter Password:</label>
+                    <input type="password" class="form-control" id="repassword" name="repassword">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="mobile">Mobile:</label>
+                <input type="text" class="form-control" id="mobile" name="mobile">
+            </div>
+            <div class="form-group row">
+                <label class="radio-inline"><input type="radio" name="gender" value="male">Male</label>
+                <label class="radio-inline"><input type="radio" name="gender" value="female">Female</label>
+            </div>
+            <div class="form-group row">
+                <label for="age">Age (18-75):</label>
+                <input type="text" class="form-control" id="age" name="age">
+            </div>
+            <div class="form-group row">
+                <label class="checkbox-inline"><input type="checkbox" name="hobbies" value="singing">Singing</label>
+                <label class="checkbox-inline"><input type="checkbox" name="hobbies" value="dancing">Dancing</label>
+                <label class="checkbox-inline"><input type="checkbox" name="hobbies" value="reading">Reading</label>
+                <label class="checkbox-inline"><input type="checkbox" name="hobbies" value="none">None of mentioned</label>
+            </div>
+            <div class="form-group row">
+                <input type="submit" class="btn btn-success">
+            </div>
+        </div>
+    </form>
+
+</div>
+@footer()

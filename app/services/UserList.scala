@@ -8,8 +8,10 @@ import scala.collection.mutable.ListBuffer
 
 object UserList {
   val userList:ListBuffer[User] = new ListBuffer[User]()
+  val my = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24)
 
-  userList.append(new User("myname", "mypassword", 24))
+
+  userList.append(my)
 
   def addUser(user:User)={
     userList.append(user)

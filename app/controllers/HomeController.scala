@@ -30,7 +30,8 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
     */
 
 
-  val pankhurie = User("pankhurie", "demo", 24)
+
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24)
 
 
   val json: JsValue = JsObject(Seq(
@@ -69,11 +70,12 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }*/
 
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.welcome())
   }
 
   def signin = Action {
     Ok(views.html.signin());
+
   }
 
   def signup = Action {
@@ -82,7 +84,7 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
 
 
   def profile = Action {
-    Ok(views.html.profile(formObj.user1))
+    Ok(views.html.profile(pankhurie))
   }
 
   def calculate = Action.async {
@@ -97,10 +99,10 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
   def getProfile() = Action { implicit request =>
-    val user:User = formObj.userForm.bindFromRequest.get
+    val (name,password) = formObj.loginForm.bindFromRequest.get
 //    val foundUser: User = UserList.getUser(user.name, user.password)
 
-     if (UserList.checkUser(user.name, user.password)) Ok(views.html.profile(user))
+     if (UserList.checkUser(name,password)) Ok(views.html.profile(UserList.getUser(name,password)))
      else Ok("No user found")
 //    val user: User = UserList.getUser(name, password)
 
