@@ -5,6 +5,8 @@ import java.util.concurrent.TimeoutException
 import javax.inject._
 
 import akka.actor.ActorSystem
+import models.{FormMapping, User}
+import play.api.cache.CacheApi
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.{Valid, Invalid, ValidationError, Constraint}
@@ -22,7 +24,7 @@ import play.api.mvc.RequestHeader
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
+class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListService, formMapping: FormMapping) extends Controller {
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -59,7 +61,7 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   implicit val userFormatter = Json.format[User]
   val me = Json.toJson(pankhurie)
 
-  val formObj = new FormController
+
 
   def index = Action {
     Ok(views.html.welcome())
@@ -89,20 +91,20 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
   def getProfile() = Action { implicit request =>
-    val (name,password) = formObj.loginForm.bindFromRequest.get
-     if (UserList.checkUser(name,password)) Ok(views.html.profile(UserList.getUser(name,password))).withSession("connected" -> name)
+    val (name,password) = formMapping.loginForm.bindFromRequest.get
+     if (userList.checkUser(name,password)) Ok(views.html.profile(userList.getUser(name,password))).withSession("connected" -> name)
      else Ok("No user found")
   }
 
   def postProfile() = Action{ implicit request =>
-    val regForm = formObj.userForm.bindFromRequest
+    val regForm = formMapping.userForm.bindFromRequest
     val user:User = regForm.get
 
     regForm.fold(formWithErrors => {
       BadRequest(" ")
     }, success => {
 
-      UserList.addUser(user) //adding user not tested yet
+      userList.addUser(user) //adding user not tested yet
       Ok(views.html.profile(user)).withSession("connected" -> user.name)
     })
 
@@ -113,7 +115,8 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
   def upload() = Action(parse.temporaryFile) { request =>
-    request.body.moveTo(new File("/home/knoldus/Documents/KIPSolutions/play/play-assignment03/app/uploadedfile"))
+    val file =request.body.file
+    file.renameTo(new File("./public/images/"+file.getName))
     Ok("File uploaded")
   }
 

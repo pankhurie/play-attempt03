@@ -1,12 +1,10 @@
-package controllers
+package models
 
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import play.api.mvc.Controller
-import services.User
 
-class FormController extends Controller{
+class FormMapping{
 
   val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false)
 
@@ -15,6 +13,7 @@ class FormController extends Controller{
     * password: String, repassword:String, mobile:String, gender:String,
     * age: Int)
     */
+
 
   val userForm = Form(
     mapping(
