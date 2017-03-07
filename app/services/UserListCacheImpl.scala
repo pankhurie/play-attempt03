@@ -35,7 +35,6 @@ class UserListCacheImpl@Inject()(cache: CacheApi) extends UserListService{
   }
 
   override def getUser(username: String): User = {
-
     val userList:ListBuffer[User] = cache.get[ListBuffer[User]]("userList").get
     userList.filter(user=> (user.name==username))(0)
   }
