@@ -6,6 +6,7 @@ import javax.inject._
 import akka.actor.ActorSystem
 import play.api.data.Forms._
 import play.api.data._
+import play.api.data.validation.{Valid, Invalid, ValidationError, Constraint}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.concurrent.Timeout
 import play.api.libs.json._
@@ -14,7 +15,7 @@ import services._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import scala.concurrent.duration._
-
+import play.api.mvc.RequestHeader
 /**
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
@@ -31,7 +32,7 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
 
 
 
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24)
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false)
 
 
   val json: JsValue = JsObject(Seq(
@@ -74,17 +75,17 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
   def signin = Action {
-    Ok(views.html.signin());
+    Ok(views.html.signin())
 
   }
 
   def signup = Action {
-    Ok(views.html.signup());
+    Ok(views.html.signup())
   }
 
 
-  def profile = Action {
-    Ok(views.html.profile(pankhurie))
+  def profile = Action { implicit request =>
+    Ok(views.html.profile(pankhurie)).withSession("connected" -> pankhurie.name)
   }
 
   def calculate = Action.async {
@@ -100,37 +101,26 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
 
   def getProfile() = Action { implicit request =>
     val (name,password) = formObj.loginForm.bindFromRequest.get
-//    val foundUser: User = UserList.getUser(user.name, user.password)
-
-     if (UserList.checkUser(name,password)) Ok(views.html.profile(UserList.getUser(name,password)))
+     if (UserList.checkUser(name,password)) Ok(views.html.profile(UserList.getUser(name,password))).withSession("connected" -> name)
      else Ok("No user found")
-//    val user: User = UserList.getUser(name, password)
-
-
-//    val formData = Form(
-//      mapping(
-//        "name" -> text,
-//        "password" -> text,
-//        "age" -> number
-//
-//      )(User.apply)(User.unapply)
-//    )
-
-    //Form<StudentFormData> formData = Form.form(StudentFormData.class).bindFromRequest();
-//    val myData = Map("name" -> "bob", "password" -> "anmol", "age" -> "18")
-//    val user1: User = formData.bind(myData).get
-    //Student student = Student.makeInstance(formData.get());
-//    val freshData = formData.bindFromRequest();
-//    val freshUser: User = freshData.get
-//    val existingUser:User = UserList.getUser(username)
-
-//    val user: User = services.UserList.getUser(existingUser.name)
-//    Ok(views.html.profile(user))
   }
 
   def postProfile() = Action{ implicit request =>
-    val user:User = formObj.userForm.bindFromRequest.get
-    UserList.addUser(user) //adding user not tested yet
-    Ok(views.html.profile(user))
+    val regForm = formObj.userForm.bindFromRequest
+    val user:User = regForm.get
+
+    regForm.fold(formWithErrors => {
+      BadRequest(" ")
+    }, success => {
+
+      UserList.addUser(user) //adding user not tested yet
+      Ok(views.html.profile(user)).withSession("connected" -> user.name)
+    })
   }
+
+  def logout() = Action { implicit request =>
+    Ok(views.html.welcome()).withNewSession
+  }
+
+
 }

@@ -1,34 +1,41 @@
 package controllers
 
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.mvc.Controller
 import services.User
 
 class FormController extends Controller{
 
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24)
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false)
 
   /**
     * User(name: String, fname:String, mname:String, lname:String,
-                password: String, repassword:String, mobile:String, gender:String,
-                age: Int)
+    * password: String, repassword:String, mobile:String, gender:String,
+    * age: Int)
     */
 
   val userForm = Form(
     mapping(
-      "name" -> text,
-      "fname" -> text,
+      "name" -> nonEmptyText,
+      "fname" -> nonEmptyText,
       "mname" -> text,
       "lname" -> text,
-      "password" -> text,
-      "repassword" -> text,
-      "mobile" -> text,
-      "gender" -> text,
-      "age" -> number
+      "password" -> nonEmptyText(minLength = 8),
+      "repassword" -> nonEmptyText(minLength = 8),
+      "mobile" -> text(minLength = 10, maxLength = 10),
+      "gender" -> nonEmptyText,
+      "age" -> number(min = 18, max = 75),
+      "singing" -> boolean,
+      "dancing" -> boolean,
+      "reading" -> boolean,
+      "sports" -> boolean
 
-    )(User.apply)(User.unapply)
-  )
+    )(User.apply)(User.unapply).verifying("Passwords do not match", fields => fields match {
+      case data => (data.password == data.repassword)
+    }
+  ))
 
   val loginForm = Form(
     tuple(
@@ -36,15 +43,36 @@ class FormController extends Controller{
       "password" -> text
     )
   )
-//
-//
-//  val myData = Map("name" -> "bob","password" -> "anmol", "age" -> "18")
-//  val pankhurieData = getCCParams(pankhurie)
-//  val user1: User = User("pankhurie", "demo", 24)
-//
-//  def getCCParams(cc: AnyRef) =
-//    (Map[String, String]() /: cc.getClass.getDeclaredFields) {(a, f) =>
-//      f.setAccessible(true)
-//      a + (f.getName -> f.get(cc).toString)
-//    }
+
+  val allNumbers = """\d*""".r
+  val allLetters = """[A-Za-z]*""".r
+
+
+  val passwordCheckConstraint: Constraint[String] = Constraint("constraints.passwordcheck")({
+    plainText =>
+      val errors = plainText match {
+        case allNumbers() => Seq(ValidationError("Password is all numbers"))
+        case _ => Nil
+      }
+      if (errors.isEmpty) {
+        Valid
+      } else {
+        Invalid(errors)
+      }
+  })
+
+  val nameCheckConstraint: Constraint[String] = Constraint("constraints.mobilecheck")({
+    plainText =>
+      val errors = plainText match {
+        case allLetters => Nil
+        case _ => Seq(ValidationError("Name can have only letters"))
+      }
+      if (errors.isEmpty) {
+        Valid
+      } else {
+        Invalid(errors)
+      }
+  })
+
+
 }

@@ -1,7 +1,12 @@
-@(user:services.User)
+@import play.api.Play.current
+@import play.api.i18n.Messages.Implicits._
+@import play.api.mvc.Session
+@import play.api.mvc.Request
+@(user:services.User)(implicit request: play.api.mvc.RequestHeader)
 @header()
 <br><br>
 <div class="row container">
+    Welcome  @request.session.get("connected")
     <table class="table">
         <tbody>
         <tr>
@@ -33,10 +38,33 @@
             <td>Age</td>
             <td>@user.age</td>
         </tr>
+        <tr>
+            <td>Hobbies</td>
+
+            <td>@if(user.singing||user.dancing||user.reading||user.sports) {
+                @if(user.singing){
+                Singing<br>
+                }
+                @if(user.dancing){
+                Dancing<br>
+                }
+                @if(user.reading){
+                Reading<br>
+                }
+                @if(user.sports){
+                Sports<br>
+                }
+
+            </td>
+            } else {
+            <td>No Hobbies specified</td>
+            }
+        </tr>
 
 
         </tbody>
     </table>
 
+    <a href="/logout" class="btn btn-success">Logout</a>
     </div>
 @footer()
