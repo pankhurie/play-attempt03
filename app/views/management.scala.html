@@ -1,5 +1,5 @@
 @import scala.collection.mutable.ListBuffer
-@(list:ListBuffer[models.User])
+@(list:ListBuffer[models.User], loggedUser:models.User)
 @header()
 <h1>Management Console (Disable/Enable Users)</h1>
 <br><br>
@@ -7,6 +7,7 @@
     <table class="table">
         <tbody>
         @for(user <- list) {
+        @if(user.name!=loggedUser.name){
         <tr>
             <td>@user.name</td>
             <td>User Enabled?: @user.isEnabled</td>
@@ -27,7 +28,9 @@
             </td>
         </tr>
         }
+        }
         </tbody>
     </table>
+    <a class="btn btn-default" href="/profile">Go to profile</a>
 </div>
 @footer()

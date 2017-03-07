@@ -15,8 +15,8 @@ GET     /signin                     controllers.HomeController.signin
 GET     /signup                     controllers.HomeController.signup
 POST     /profile                    controllers.HomeController.getProfile()
 POST     /newuser                    controllers.HomeController.postProfile()
-GET     /calculate                  controllers.HomeController.calculate
 GET     /logout                     controllers.HomeController.logout()
 POST    /signup                      controllers.HomeController.upload()
 GET     /management                 controllers.HomeController.management()
 POST     /management                 controllers.HomeController.toggle()
+GET     /profile                    controllers.HomeController.profile

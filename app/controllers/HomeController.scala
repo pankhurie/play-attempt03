@@ -6,19 +6,14 @@ import javax.inject._
 
 import akka.actor.ActorSystem
 import models.{FormMapping, User}
-import play.api.cache.CacheApi
-import play.api.data.Forms._
-import play.api.data._
-import play.api.data.validation.{Valid, Invalid, ValidationError, Constraint}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.concurrent.Timeout
 import play.api.libs.json._
 import play.api.mvc._
 import services._
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+
 import scala.concurrent.duration._
-import play.api.mvc.RequestHeader
+
 /**
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
@@ -34,8 +29,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
     */
 
 
-
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, false, true)
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo", "9999999999", "female", 24, true, true, true, false, false, true)
 
 
   val json: JsValue = JsObject(Seq(
@@ -62,8 +56,12 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
   val me = Json.toJson(pankhurie)
 
 
-  def management() = Action{
-    Ok(views.html.management(accountService.getList()))
+  def management() = Action { implicit  request =>
+    request.session.get("connected").map { sessionname =>
+    Ok(views.html.management(accountService.getList(), accountService.getUser(sessionname)))
+    }.getOrElse {
+      Unauthorized("Oops, you are not logged in")
+    }
   }
 
   def index = Action {
@@ -79,36 +77,39 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
   }
 
   def profile = Action { implicit request =>
-    Ok(views.html.profile(pankhurie)).withSession("connected" -> pankhurie.name)
-  }
-
-  def calculate = Action.async {
-    Timeout.timeout(actorSystem, 0.0001.microseconds) {
-      (new FutureDemo).factorial(20).map { product =>
-        Ok("Factorial of 20: " + product)
-      }
-    }.recover {
-      case e: TimeoutException =>
-        InternalServerError("timeout")
+    request.session.get("connected").map { sessionname =>
+      Ok(views.html.profile(accountService.getUser(sessionname)))
+    }.getOrElse {
+      Unauthorized("Oops, you are not logged in")
     }
   }
 
   def getProfile() = Action { implicit request =>
-    val (name,password) = formMapping.loginForm.bindFromRequest.get
-     if (accountService.checkUser(name,password)) Ok(views.html.profile(accountService.getUser(name))).withSession("connected" -> name)
-     else Ok("No user found")
+    val (name, password) = formMapping.loginForm.bindFromRequest.get
+    val user = accountService.getUser(name)
+    if (accountService.checkUser(name, password))
+      if (user.isEnabled)
+        Ok(views.html.profile(user)).withSession("connected" -> name)
+      else
+        Ok("Account disabled. Please contact administrator")
+    else Ok("Incorrect Username/Password")
   }
 
-  def postProfile() = Action{ implicit request =>
+  def postProfile() = Action { implicit request =>
     val regForm = formMapping.userForm.bindFromRequest
-    val user:User = regForm.get
+    val user: User = regForm.get
 
     regForm.fold(formWithErrors => {
       BadRequest(" ")
     }, success => {
 
-      accountService.addUser(user) //adding user not tested yet
-      Ok(views.html.profile(user)).withSession("connected" -> user.name)
+      if (user.isEnabled) {
+        accountService.addUser(user) //adding user not tested yet
+        Ok(views.html.profile(user)).withSession("connected" -> user.name)
+      }
+      else {
+        Ok("Account Disabled")
+      }
     })
 
   }
@@ -118,17 +119,16 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
   }
 
   def upload() = Action(parse.temporaryFile) { request =>
-    val file =request.body.file
-    file.renameTo(new File("./public/images/"+file.getName))
+    val file = request.body.file
+    file.renameTo(new File("./public/images/" + file.getName))
     Ok("File uploaded")
   }
 
-  def toggle()=Action{ implicit request =>
+  def toggle() = Action { implicit request =>
     request.session.get("connected").map { sessionname =>
-    val (username) = formMapping.toggleForm.bindFromRequest.get
-    println("toggle was called for : "+ username)
-    accountService.toggleEnable(username)
-    Ok(views.html.profile(accountService.getUser(sessionname))).withSession("connected" -> sessionname)
+      val (username) = formMapping.toggleForm.bindFromRequest.get
+      accountService.toggleEnable(username)
+      Ok(views.html.profile(accountService.getUser(sessionname)))
     }.getOrElse {
       Unauthorized("Oops, you are not connected")
     }
