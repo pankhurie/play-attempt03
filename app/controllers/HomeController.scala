@@ -1,5 +1,6 @@
 package controllers
 
+import java.io.File
 import java.util.concurrent.TimeoutException
 import javax.inject._
 
@@ -123,4 +124,8 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
 
+  def upload() = Action(parse.temporaryFile) { request =>
+    request.body.moveTo(new File("/home/knoldus/Documents/KIPSolutions/play/play-assignment03/app/uploadedfile"))
+    Ok("File uploaded")
+  }
 }

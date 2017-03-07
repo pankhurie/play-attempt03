@@ -17,3 +17,4 @@ POST     /profile                    controllers.HomeController.getProfile()
 POST     /newuser                    controllers.HomeController.postProfile()
 GET     /calculate                  controllers.HomeController.calculate
 GET     /logout                     controllers.HomeController.logout()
+POST    /signup                      controllers.HomeController.upload()
