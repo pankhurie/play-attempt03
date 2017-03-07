@@ -1,8 +1,6 @@
 package services
 
-/**
-  * Created by knoldus on 7/3/17.
-  */
+
 object MD5 {
   def hash(s: String) = {
     val m = java.security.MessageDigest.getInstance("MD5")

@@ -24,7 +24,7 @@ import play.api.mvc.RequestHeader
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListService, formMapping: FormMapping) extends Controller {
+class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserListService, formMapping: FormMapping) extends Controller {
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -35,7 +35,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListServi
 
 
 
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false)
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, false, true)
 
 
   val json: JsValue = JsObject(Seq(
@@ -62,6 +62,9 @@ class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListServi
   val me = Json.toJson(pankhurie)
 
 
+  def management() = Action{
+    Ok(views.html.management(accountService.getList()))
+  }
 
   def index = Action {
     Ok(views.html.welcome())
@@ -92,7 +95,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListServi
 
   def getProfile() = Action { implicit request =>
     val (name,password) = formMapping.loginForm.bindFromRequest.get
-     if (userList.checkUser(name,password)) Ok(views.html.profile(userList.getUser(name,password))).withSession("connected" -> name)
+     if (accountService.checkUser(name,password)) Ok(views.html.profile(accountService.getUser(name))).withSession("connected" -> name)
      else Ok("No user found")
   }
 
@@ -104,7 +107,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListServi
       BadRequest(" ")
     }, success => {
 
-      userList.addUser(user) //adding user not tested yet
+      accountService.addUser(user) //adding user not tested yet
       Ok(views.html.profile(user)).withSession("connected" -> user.name)
     })
 
@@ -119,5 +122,18 @@ class HomeController @Inject()(actorSystem: ActorSystem, userList: UserListServi
     file.renameTo(new File("./public/images/"+file.getName))
     Ok("File uploaded")
   }
+
+  def toggle()=Action{ implicit request =>
+    request.session.get("connected").map { sessionname =>
+    val (username) = formMapping.toggleForm.bindFromRequest.get
+    println("toggle was called for : "+ username)
+    accountService.toggleEnable(username)
+    Ok(views.html.profile(accountService.getUser(sessionname))).withSession("connected" -> sessionname)
+    }.getOrElse {
+      Unauthorized("Oops, you are not connected")
+    }
+
+  }
+
 
 }

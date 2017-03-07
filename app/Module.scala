@@ -25,7 +25,6 @@ class Module extends AbstractModule {
     bind(classOf[Counter]).to(classOf[AtomicCounter])
     bind(classOf[services.UserListService]).to(classOf[services.UserListCacheImpl]).asEagerSingleton()
 
-
   }
 
 }

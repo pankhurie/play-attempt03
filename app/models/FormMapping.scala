@@ -6,7 +6,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
 class FormMapping{
 
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false)
+  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, true, true)
 
   /**
     * User(name: String, fname:String, mname:String, lname:String,
@@ -29,7 +29,9 @@ class FormMapping{
       "singing" -> boolean,
       "dancing" -> boolean,
       "reading" -> boolean,
-      "sports" -> boolean
+      "sports" -> boolean,
+      "isAdmin" -> boolean,
+      "isEnabled" -> boolean
 
     )(User.apply)(User.unapply).verifying("Passwords do not match", fields => fields match {
       case data => (data.password == data.repassword)
@@ -40,6 +42,12 @@ class FormMapping{
     tuple(
       "name" -> text,
       "password" -> text
+    )
+  )
+
+  val toggleForm = Form(
+    single(
+      "username" -> text
     )
   )
 

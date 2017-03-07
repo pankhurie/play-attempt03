@@ -1,0 +1,33 @@
+@import scala.collection.mutable.ListBuffer
+@(list:ListBuffer[models.User])
+@header()
+<h1>Management Console (Disable/Enable Users)</h1>
+<br><br>
+<div class="row container">
+    <table class="table">
+        <tbody>
+        @for(user <- list) {
+        <tr>
+            <td>@user.name</td>
+            <td>User Enabled?: @user.isEnabled</td>
+            <td>
+                <form class="form" method="post" action=@routes.HomeController.toggle()>
+                    <input type="hidden" id="username" name="username" value=@user.name>
+                    <input type="submit" class="btn btn-default" name="toggleEnable" id = "toggleEnable"
+                           @if(user.isEnabled){
+                    value="Disable"
+
+                    }
+                    else{
+                    value="Enable"
+
+                    }
+                    >
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+@footer()

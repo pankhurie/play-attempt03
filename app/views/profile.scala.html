@@ -67,7 +67,13 @@
             </form>
         </tr>
 
+        @if(user.isAdmin){
+        <tr>
+            <td>Manage Users</td>
+            <td><a href="/management">Go To Management Console</a></td>
 
+        </tr>
+        }
 
         </tbody>
     </table>

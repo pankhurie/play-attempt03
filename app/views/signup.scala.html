@@ -58,6 +58,14 @@
                 <label class="checkbox-inline"><input type="checkbox" name="reading" id="reading" checked="checked" value="true">Reading</label>
                 <label class="checkbox-inline"><input type="checkbox" name="sports" id="sports" checked="checked" value="true">Sports</label>
             </div>
+            <input type="hidden" name="isEnabled" id="isEnabled" value = true>
+            <input type="hidden" name="isAdmin" id="isAdmin"
+                   @if(play.Play.application().configuration().getString("play.cache.role")=="admin"){
+                        value=true
+            }
+            else {
+            value=false
+            }>
             <div class="form-group row">
                 <input type="submit" class="btn btn-success">
             </div>
