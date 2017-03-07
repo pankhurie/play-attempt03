@@ -40,7 +40,7 @@
         </tr>
         <tr>
             <td>Hobbies</td>
-            @if(user.singing||user.dancing||user.reading||user.sports) {
+
             <td>
                 @if(user.singing){
                 Singing<br>
@@ -55,9 +55,8 @@
                 Sports<br>
                 }
             </td>
-            } else {
-            <td>No Hobbies specified</td>
-            }
+
+
         </tr>
         <tr>
             <form method="post" action = "@routes.HomeController.upload" enctype="multipart/form-data">
