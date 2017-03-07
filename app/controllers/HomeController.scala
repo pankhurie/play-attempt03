@@ -102,9 +102,9 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
     regForm.fold(formWithErrors => {
       BadRequest(" ")
     }, success => {
-
+      accountService.addUser(user)
       if (user.isEnabled) {
-        accountService.addUser(user) //adding user not tested yet
+        //adding user not tested yet
         Ok(views.html.profile(user)).withSession("connected" -> user.name)
       }
       else {
