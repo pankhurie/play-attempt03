@@ -40,8 +40,8 @@
         </tr>
         <tr>
             <td>Hobbies</td>
-
-            <td>@if(user.singing||user.dancing||user.reading||user.sports) {
+            @if(user.singing||user.dancing||user.reading||user.sports) {
+            <td>
                 @if(user.singing){
                 Singing<br>
                 }
@@ -54,7 +54,6 @@
                 @if(user.sports){
                 Sports<br>
                 }
-
             </td>
             } else {
             <td>No Hobbies specified</td>
@@ -62,12 +61,13 @@
         </tr>
         <tr>
             <form method="post" action = "@routes.HomeController.upload" enctype="multipart/form-data">
-            <td>Add Profile Picture</td>
-            <td>
-                <input type="file" name="picture"> <input type="submit" value="Upload" class="btn btn-default">
-            </td>
+                <td>Add Profile Picture</td>
+                <td>
+                    <input type="file" name="picture"> <input type="submit" value="Upload" class="btn btn-default">
+                </td>
             </form>
         </tr>
+
 
 
         </tbody>

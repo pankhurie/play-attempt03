@@ -56,20 +56,10 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
   //not preferred
   val nameSome = (json \ "name").asOpt[String] //gets option , preferred
 
-
   implicit val userFormatter = Json.format[User]
   val me = Json.toJson(pankhurie)
 
-
   val formObj = new FormController
-
-  /*def myMethod():Either[String,Int]={
-    val num=1
-    num match{
-      case 1 => Left(1)
-      case _ => Right("")
-    }
-  }*/
 
   def index = Action {
     Ok(views.html.welcome())
@@ -77,13 +67,11 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
 
   def signin = Action {
     Ok(views.html.signin())
-
   }
 
   def signup = Action {
     Ok(views.html.signup())
   }
-
 
   def profile = Action { implicit request =>
     Ok(views.html.profile(pankhurie)).withSession("connected" -> pankhurie.name)
@@ -117,15 +105,16 @@ class HomeController @Inject()(actorSystem: ActorSystem) extends Controller {
       UserList.addUser(user) //adding user not tested yet
       Ok(views.html.profile(user)).withSession("connected" -> user.name)
     })
+
   }
 
   def logout() = Action { implicit request =>
     Ok(views.html.welcome()).withNewSession
   }
 
-
   def upload() = Action(parse.temporaryFile) { request =>
     request.body.moveTo(new File("/home/knoldus/Documents/KIPSolutions/play/play-assignment03/app/uploadedfile"))
     Ok("File uploaded")
   }
+
 }
