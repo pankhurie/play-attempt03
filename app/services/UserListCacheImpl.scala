@@ -12,12 +12,12 @@ import scala.collection.mutable.ListBuffer
 class UserListCacheImpl@Inject()(cache: CacheApi, md5: MD5) extends UserListService{
 
   cache.set("userList", ListBuffer[User]())
-  val my = User("pankhurie", "pankhurie", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, true, true)
+  /*val my = User("pankhurie", "pankhurie", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, true, true)
   val my2 = User("pankhuriegupta", "pankhuriegupta", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, false, true)
   val my3 = User("gupta", "gupta", "mname", "lname", "demo", "demo",  "9999999999", "female", 24, true, true, true, false, false, false)
   this.addUser(my)
   this.addUser(my2)
-  this.addUser(my3)
+  this.addUser(my3)*/
 
   override def addUser(user: User): Boolean = {
     try{
