@@ -13,37 +13,31 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
       route(app, FakeRequest(GET, "/badpath")).map(status(_)) mustBe Some(NOT_FOUND)
     }
 
-    "respond to the index Action" in new App() {
+    "respond to the index Action" in {
       val Some(result) = route(app, FakeRequest(GET, "/"))
       status(result) mustBe OK
-      contentType(result) mustBe ("text/html")
-      charset(result) mustBe ("utf-8")
+      contentType(result) mustBe Some("text/html")
+      charset(result) mustBe Some("utf-8")
       contentAsString(result) must include("Welcome. Please Sign in or sign up.")
     }
 
-    "respond to the signUp Action" in new App() {
+    "respond to the signUp Action" in {
       val Some(result) = route(app, FakeRequest(GET, "/signup"))
       status(result) mustBe OK
-      contentType(result) mustBe ("text/html")
-      charset(result) mustBe ("utf-8")
+      contentType(result) mustBe Some("text/html")
+      charset(result) mustBe Some("utf-8")
       contentAsString(result) must include("Please fill details below (Fields marked with * are mandatory)")
     }
 
-    "respond to the signIn Action" in new App() {
+    "respond to the signIn Action" in {
       val Some(result) = route(app, FakeRequest(GET, "/signin"))
       status(result) mustBe OK
-      contentType(result) mustBe ("text/html")
-      charset(result) mustBe ("utf-8")
+      contentType(result) mustBe Some("text/html")
+      charset(result) mustBe Some("utf-8")
       contentAsString(result) must include("Sign in below")
     }
 
-    "respond somethingwrong" in new App() {
-      val Some(result) = route(app, FakeRequest(POST, "/somethingwron"))
-      status(result) mustBe OK
-      contentType(result) mustBe ("text/html")
-      charset(result) mustBe ("utf-8")
-      contentAsString(result) must include("anything")
-    }
+
   }
 
 }

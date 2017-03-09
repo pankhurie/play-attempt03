@@ -29,8 +29,12 @@ class HomeControllerSpec extends PlaySpec with OneAppPerTest {
       val home = route(app, FakeRequest(GET, "/signup")).get
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Please fill details below (Fields marked with * are mandatory)")
+      val body = contentAsString(home)
+
+      body must include ("Please fill details below (Fields marked with * are mandatory)")
     }
+
+
 
   }
 

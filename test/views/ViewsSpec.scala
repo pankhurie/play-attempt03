@@ -30,13 +30,6 @@ class ViewsSpec extends PlaySpec with MockitoSugar with OneAppPerTest{
       contentAsString(html) must include("Management Console")
     }
 
-    /*"render profile page" in {
-      val header = mock[RequestHeader]
-      val user =User("", "", "", "", "", "",  "", "", 24, true, true, true, true, true, true)
-      val html = views.html.profile(user)(header)
-      contentAsString(html) must include("Add Profile Picture")
-    }*/
-
     "render sign in page" in {
       val html = views.html.signin()
       contentAsString(html) must include("Sign in below")
@@ -47,6 +40,13 @@ class ViewsSpec extends PlaySpec with MockitoSugar with OneAppPerTest{
       val html = views.html.signup()
       contentAsString(html) must include("Please fill details below (Fields marked with * are mandatory)")
     }
+
+    "render profile page" in {
+     val header = mock[RequestHeader]
+     val user =User("", "", "", "", "", "",  "", "", 24, true, true, true, true, true, true)
+     val html = views.html.profile(user)(header)
+     contentAsString(html) must include("Add Profile Picture")
+   }
   }
 
 }
