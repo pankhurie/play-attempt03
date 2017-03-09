@@ -31,7 +31,6 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
 
   val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo", "9999999999", "female", 24, true, true, true, false, false, true)
 
-
   val json: JsValue = JsObject(Seq(
     "name" -> JsString("Watership Down"),
     "location" -> JsObject(Seq("lat" -> JsNumber(51.235685), "long" -> JsNumber(-1.309197))),

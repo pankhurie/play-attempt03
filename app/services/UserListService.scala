@@ -11,15 +11,13 @@ trait UserListService {
 
   def addUser(user:User):Boolean
 
+  def userExists(username:String):Boolean
+
   def getUser(username:String):User
 
   def checkUser(username:String, password:String):Boolean
 
   def getList():ListBuffer[User]
-
-/*  def disableUser(user:User):Boolean
-
-  def enableUser(user:User):Boolean*/
 
   def toggleEnable(username:String):Boolean
 
