@@ -15,7 +15,7 @@ import scala.collection.mutable.ListBuffer
   */
 class ViewsSpec extends PlaySpec with MockitoSugar with OneAppPerTest{
 
-  "Home Controller" should{
+  "Views should" should{
     "render the welcome page" in{
       val html = views.html.welcome()
       contentAsString(html) must include("Welcome. Please Sign in or sign up")

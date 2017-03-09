@@ -19,7 +19,7 @@ import scala.concurrent.duration._
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserListService, formMapping: FormMapping) extends Controller {
+class HomeController @Inject()(accountService: UserListService, formMapping: FormMapping) extends Controller {
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -29,7 +29,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
     */
 
 
-  val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo", "9999999999", "female", 24, true, true, true, false, false, true)
+ /* val pankhurie = User("pankhurie", "fname", "mname", "lname", "demo", "demo", "9999999999", "female", 24, true, true, true, false, false, true)
 
   val json: JsValue = JsObject(Seq(
     "name" -> JsString("Watership Down"),
@@ -53,7 +53,7 @@ class HomeController @Inject()(actorSystem: ActorSystem, accountService: UserLis
 
   implicit val userFormatter = Json.format[User]
   val me = Json.toJson(pankhurie)
-
+*/
 
   def management() = Action { implicit  request =>
     request.session.get("connected").map { sessionname =>
