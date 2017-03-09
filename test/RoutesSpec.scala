@@ -53,15 +53,6 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
       contentAsString(result) must include("Oops, you are not logged in")
     }
 
-    "return not logged in if toggle is accessed without session" in {
-      val Some(result) = route(app, FakeRequest(GET, "/toggle"))
-      status(result) mustBe UNAUTHORIZED
-      contentType(result) mustBe Some("text/plain")
-      charset(result) mustBe Some("utf-8")
-      contentAsString(result) must include("Oops, you are not logged in")
-    }
-
-
 
 
 
