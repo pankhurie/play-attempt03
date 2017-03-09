@@ -41,7 +41,7 @@ class ViewsSpec extends PlaySpec with MockitoSugar with OneAppPerTest{
       contentAsString(html) must include("Please fill details below (Fields marked with * are mandatory)")
     }
 
-    "render profile page" in {
+    "render profile page" in new App{
      val header = mock[RequestHeader]
      val user =User("", "", "", "", "", "",  "", "", 24, true, true, true, true, true, true)
      val html = views.html.profile(user)(header)
